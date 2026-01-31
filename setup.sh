@@ -13,7 +13,7 @@ download() {
     local url="$1" dest="$2"
     [[ -f "$dest" ]] && return 0
     info "Downloading $(basename "$dest")..."
-    curl -fL --progress-bar -o "$dest" "$url"
+    curl -fL --http1.1 --progress-bar -o "$dest" "$url"
 }
 
 echo ""
