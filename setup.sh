@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA="${ROOT}/data"
-R2="https://pub-300aa167ec814b75aa0e24df3c6e0bc1.r2.dev"
+R2="https://data.szags.uk"
 
 info() { echo -e "\033[1;34m[INFO]\033[0m $1"; }
 ok() { echo -e "\033[1;32m[OK]\033[0m $1"; }
