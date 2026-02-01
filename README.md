@@ -49,6 +49,27 @@ Without CuPy, the pipeline falls back to CPU (slower but functional).
 
 ---
 
+## Web Server & API
+
+For users without local GPU infrastructure, G-VEP is available as a hosted service:
+
+**Web Interface:** https://www.phenomeportal.org/gvep  
+Upload VCF files and download annotated results through your browser.
+
+**REST API:** Programmatic access for pipeline integration.
+```bash
+# Request upload URL
+curl -X POST https://p7001.greenaurem.org/jobs/request-upload-url \
+  -H "Content-Type: application/json" \
+  -d '{"account_id": "YOUR_ID", "filename": "sample.vcf.gz"}'
+
+# Check job status
+curl "https://p7001.greenaurem.org/jobs/status/JOB_ID?account_id=YOUR_ID"
+```
+
+Full API documentation available at the web interface (API tab).
+
+---
 ## Usage
 
 ```bash
