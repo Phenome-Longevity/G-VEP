@@ -69,11 +69,11 @@ configure_rclone
 
 # Python dependencies
 info "Installing Python dependencies..."
-pip install --quiet numpy pysam tqdm
+pip install --quiet --break-system-packages numpy pysam tqdm
 
 # GPU support (optional)
 info "Checking GPU support..."
-if pip install --quiet cupy-cuda12x 2>/dev/null; then
+if pip install --quiet --break-system-packages cupy-cuda12x 2>/dev/null; then
     ok "GPU support enabled (CuPy installed)"
 else
     info "CuPy not installed - will use CPU mode"
