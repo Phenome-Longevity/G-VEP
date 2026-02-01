@@ -14,7 +14,6 @@ info() { echo -e "\033[1;34m[INFO]\033[0m $1"; }
 ok() { echo -e "\033[1;32m[OK]\033[0m $1"; }
 err() { echo -e "\033[1;31m[ERROR]\033[0m $1"; exit 1; }
 
-# Install rclone if needed
 install_rclone() {
     if command -v rclone &>/dev/null; then
         return 0
@@ -23,7 +22,6 @@ install_rclone() {
     curl -fsSL https://rclone.org/install.sh | sudo bash
 }
 
-# Configure rclone for R2
 configure_rclone() {
     mkdir -p ~/.config/rclone
     cat > ~/.config/rclone/rclone.conf << EOF
@@ -37,7 +35,20 @@ no_check_bucket = true
 EOF
 }
 
-# Download with rclone (handles chunking automatically)
+check_deps() {
+    info "Checking system dependencies..."
+    local missing=()
+    
+    command -v docker &>/dev/null || missing+=("docker.io")
+    command -v bgzip &>/dev/null || missing+=("tabix")
+    command -v python3 &>/dev/null || missing+=("python3")
+    
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        err "Missing packages: ${missing[*]}\nInstall with: sudo apt install ${missing[*]}"
+    fi
+    ok "System dependencies OK"
+}
+
 download() {
     local src="$1" dest="$2"
     [[ -f "$dest" ]] && return 0
@@ -45,21 +56,28 @@ download() {
     rclone copyto "g-vep-r2:${R2_BUCKET}/${src}" "$dest" --progress
 }
 
-download_dir() {
-    local src="$1" dest="$2"
-    [[ -d "$dest" ]] && [[ "$(ls -A "$dest" 2>/dev/null)" ]] && return 0
-    info "Downloading ${src}..."
-    mkdir -p "$dest"
-    rclone copy "g-vep-r2:${R2_BUCKET}/${src}" "$dest" --progress
-}
-
 echo ""
 echo "G-VEP Setup"
 echo "==========="
 
+# Check dependencies first
+check_deps
+
 # Setup rclone
 install_rclone
 configure_rclone
+
+# Python dependencies
+info "Installing Python dependencies..."
+pip install --quiet numpy pysam tqdm
+
+# GPU support (optional)
+info "Checking GPU support..."
+if pip install --quiet cupy-cuda12x 2>/dev/null; then
+    ok "GPU support enabled (CuPy installed)"
+else
+    info "CuPy not installed - will use CPU mode"
+fi
 
 # GPU indices
 info "Checking GPU indices..."
