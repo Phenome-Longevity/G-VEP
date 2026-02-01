@@ -80,7 +80,7 @@ echo "[Step 2/4] Running VEP (lightweight mode)..."
 echo "TIMER|VEP_START|$(date +%s)"
 STEP2_START=$(date +%s)
 
-docker run --rm \
+docker run --rm --user $(id -u):$(id -g) \
     -v "${VEP_CACHE}:/data/vep_cache:ro" \
     -v "${OUTPUT_BASE}:/data/output" \
     ${VEP_IMAGE} \
