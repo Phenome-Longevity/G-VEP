@@ -1,10 +1,20 @@
-data/gpu_indices/
-data/vep_cache/
+# outputs & temp
 outputs/
+outputs_*/
+*.vcf
+*.vcf.gz
+*.tbi
+*.log
+*.err
+
+# built binaries (compiled by setup.sh from src/)
+/bin/build_index
+/bin/lookup
+
+# python
 __pycache__/
 *.pyc
-*.log
-*.tmp
-.DS_Store
-inputs/
-outputs/
+
+# large data — downloaded separately (see setup.sh / README)
+data/vep_cache/
+data/gpu_indices/
